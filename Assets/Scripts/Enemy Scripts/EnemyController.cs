@@ -19,16 +19,16 @@ public class EnemyController : MonoBehaviour {
     public float walk_Speed = 0.5f;
     public float run_Speed = 4f;
 
-    public float chase_Distance = 7f;
-    private float current_Chase_Distance;
-    public float attack_Distance = 1.8f;
+    public float chase_Distance = 7f; //дистанция для погони
+    private float current_Chase_Distance; //текущая дистанция
+    public float attack_Distance = 1.8f; //дистанция атаки
     public float chase_After_Attack_Distance = 2f;
 
     public float patrol_Radius_Min = 20f, patrol_Radius_Max = 60f;
     public float patrol_For_This_Time = 15f;
     private float patrol_Timer;
 
-    public float wait_Before_Attack = 2f;
+    public float wait_Before_Attack = 2f; //время ожидания перед атакой
     private float attack_Timer;
 
     private Transform target;
@@ -50,16 +50,14 @@ public class EnemyController : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
-        enemy_State = EnemyState.PATROL;
+        enemy_State = EnemyState.PATROL; //состояние врага прогулка
 
         patrol_Timer = patrol_For_This_Time;
 
-        // when the enemy first gets to the player
-        // attack right away
+        // когда противник впервые попадает в атаку игрока
         attack_Timer = wait_Before_Attack;
 
-        // memorize the value of chase distance
-        // so that we can put it back
+        // запомнить значение расстояния погони, чтобы его можно было вернуть
         current_Chase_Distance = chase_Distance;
 
 	}
@@ -83,11 +81,11 @@ public class EnemyController : MonoBehaviour {
 
     void Patrol() {
 
-        // tell nav agent that he can move
+        // указание агенту, что он может двигаться
         navAgent.isStopped = false;
         navAgent.speed = walk_Speed;
 
-        // add to the patrol timer
+        // добавление таймера к прогулке
         patrol_Timer += Time.deltaTime;
 
         if(patrol_Timer > patrol_For_This_Time) {
@@ -108,29 +106,29 @@ public class EnemyController : MonoBehaviour {
 
         }
 
-        // test the distance between the player and the enemy
-        if(Vector3.Distance(transform.position, target.position) <= chase_Distance) {
+        // проверка расстояние между игроком и противником
+        if(Vector3.Distance(transform.position, target.position) <= chase_Distance) 
+        {
 
-            enemy_Anim.Walk(false);
+            enemy_Anim.Walk(false); //остановить ходьбу
 
-            enemy_State = EnemyState.CHASE;
+            enemy_State = EnemyState.CHASE; //назначить состояние погони
 
-            // play spotted audio
+            
             enemy_Audio.Play_ScreamSound();
 
         }
 
 
-    } // patrol
+    } 
 
     void Chase() {
 
-        // enable the agent to move again
+        // разрешение агенту двигаться
         navAgent.isStopped = false;
         navAgent.speed = run_Speed;
 
-        // set the player's position as the destination
-        // because we are chasing(running towards) the player
+        //установка позиции игрока в качестве пункта преследования
         navAgent.SetDestination(target.position);
 
         if (navAgent.velocity.sqrMagnitude > 0) {
@@ -143,32 +141,33 @@ public class EnemyController : MonoBehaviour {
 
         }
 
-        // if the distance between enemy and player is less than attack distance
-        if(Vector3.Distance(transform.position, target.position) <= attack_Distance) {
+        // если расстояние между противником и игроком меньше дистанции атаки 
+        if(Vector3.Distance(transform.position, target.position) <= attack_Distance) 
+        {
 
-            // stop the animations
+            // остановка анимаций
             enemy_Anim.Run(false);
             enemy_Anim.Walk(false);
             enemy_State = EnemyState.ATTACK;
 
-            // reset the chase distance to previous
-            if(chase_Distance != current_Chase_Distance) {
+            // сброс дистанции до предыдушей
+            if(chase_Distance != current_Chase_Distance) 
+            {
                 chase_Distance = current_Chase_Distance;
             }
 
-        } else if(Vector3.Distance(transform.position, target.position) > chase_Distance) {
-            // player run away from enemy
-
-            // stop running
+        } 
+        else if(Vector3.Distance(transform.position, target.position) > chase_Distance) // игрок убежал от врача
+        {
+            // остановка анимации бега
             enemy_Anim.Run(false);
 
             enemy_State = EnemyState.PATROL;
 
-            // reset the patrol timer so that the function
-            // can calculate the new patrol destination right away
+            //сбросить таймер патрулирования, чтобы функция могла сразу рассчитать новый пункт назначения патрулирования 
             patrol_Timer = patrol_For_This_Time;
 
-            // reset the chase distance to previous
+            //сброс дистанции погони
             if (chase_Distance != current_Chase_Distance) {
                 chase_Distance = current_Chase_Distance;
             }
@@ -190,8 +189,7 @@ public class EnemyController : MonoBehaviour {
             enemy_Anim.Attack();
 
             attack_Timer = 0f;
-
-            // play attack sound
+            
             enemy_Audio.Play_AttackSound();
 
         }
@@ -231,7 +229,8 @@ public class EnemyController : MonoBehaviour {
         }
     }
 
-    public EnemyState Enemy_State {
+    public EnemyState Enemy_State 
+    {
         get; set;
     }
 

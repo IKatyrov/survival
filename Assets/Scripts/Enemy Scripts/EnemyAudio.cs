@@ -7,7 +7,7 @@ public class EnemyAudio : MonoBehaviour {
     private AudioSource audioSource;
 
     [SerializeField]
-    private AudioClip scream_Clip, die_Clip;
+    private AudioClip scream_Clip, /*крик*/ die_Clip; /*смерть*/
 
     [SerializeField]
     private AudioClip[] attack_Clips;
@@ -17,17 +17,20 @@ public class EnemyAudio : MonoBehaviour {
         audioSource = GetComponent<AudioSource>();
 	}
 
-    public void Play_ScreamSound() {
+    public void Play_ScreamSound() //крик
+    { 
         audioSource.clip = scream_Clip;
         audioSource.Play();
     }
 
-    public void Play_AttackSound() {
+    public void Play_AttackSound() //атака
+    {
         audioSource.clip = attack_Clips[Random.Range(0, attack_Clips.Length)];
         audioSource.Play();
     }
 
-    public void Play_DeadSound() {
+    public void Play_DeadSound() //смерть
+    {
         audioSource.clip = die_Clip;
         audioSource.Play();
     }
